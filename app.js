@@ -429,22 +429,23 @@ async function initApp() {
       );
       allNotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch(e) { console.warn('loadOwnerView:', e); }
-    const greetings = [
-  'your jar is waiting 🕯',
-  'someone is thinking of you ✉',
-  'a little love is inside 🌸',
-  'open one, you deserve it 💛',
-];
-const g = document.getElementById('jar-greeting');
-if (g) g.textContent = unopened.length > 0
-  ? greetings[Math.floor(Math.random() * greetings.length)]
-  : 'your jar is empty for now…';
 
     const unopened    = allNotes.filter(n => n.isOpened === false);
     const oneDayAgo   = Date.now() - 86400000;
     const openedToday = allNotes.filter(n =>
       n.isOpened === true && (n.openedAt?.toMillis?.() || 0) > oneDayAgo
     );
+
+    const greetings = [
+      'your jar is waiting 🕯',
+      'someone is thinking of you ✉',
+      'a little love is inside 🌸',
+      'open one, you deserve it 💛',
+    ];
+    const g = document.getElementById('jar-greeting');
+    if (g) g.textContent = unopened.length > 0
+      ? greetings[Math.floor(Math.random() * greetings.length)]
+      : 'your jar is empty for now…';
 
     // Badge
     if (unopened.length > 0) {
@@ -877,3 +878,4 @@ if (g) g.textContent = unopened.length > 0
 
   setTimeout(() => loadingScreen.classList.add('hidden'), 3000);
 }
+
