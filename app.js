@@ -62,6 +62,7 @@ async function initApp() {
   const firebaseApp = initializeApp(FIREBASE_CONFIG);
   const auth        = getAuth(firebaseApp);
   const db          = getFirestore(firebaseApp);
+  await setPersistence(auth, browserLocalPersistence);
   const $           = id => document.getElementById(id);
 
   /* ── DOM ──────────────────────────────────────────────────── */
