@@ -2,9 +2,9 @@
    THE LOVE NOTE JAR — style.css  v4
 ═══════════════════════════════════════════════════════ */
 
-@font-face { font-family:'JarTitle';    src:url('assets/FeGPit2.ttf') format('truetype'); }
-@font-face { font-family:'Handwriting'; src:url('assets/Handwriting-Regular.otf') format('opentype'); }
-@font-face { font-family:'Typewriter';  src:url('assets/Mom t___.ttf') format('truetype'); }
+@font-face { font-family:'JarTitle';    src:url('assets/fegpit.ttf') format('truetype'); }
+@font-face { font-family:'Handwriting'; src:url('assets/handwriting-regular.otf') format('opentype'); }
+@font-face { font-family:'Typewriter';  src:url('assets/mom-typewriter.ttf') format('truetype'); }
 
 :root {
   --bg:          #f4eee1;
