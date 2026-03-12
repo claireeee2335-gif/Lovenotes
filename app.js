@@ -18,8 +18,8 @@ const FIREBASE_CONFIG = {
 };
 /* ──────────────────────────────────────────────────────────── */
 
-const DAILY_OPEN_LIMIT = 10;
-const GUEST_SEND_LIMIT = 10;
+const DAILY_OPEN_LIMIT = 5;
+const GUEST_SEND_LIMIT = 5;
 
 /* ─── JAR GEOMETRY (pixels, relative to #jar-wrapper 240×310px) ─
    Measure your jar.png and tweak these if slips look off.
