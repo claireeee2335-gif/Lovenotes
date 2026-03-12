@@ -431,7 +431,7 @@ async function initApp() {
     } catch(e) { console.warn('loadOwnerView:', e); }
 
     const unopened    = allNotes.filter(n => n.isOpened === false);
-    const oneDayAgo   = Date.now() - 86400000;
+    const oneDayAgo   = Date.now() - 10000;
     const openedToday = allNotes.filter(n =>
       n.isOpened === true && (n.openedAt?.toMillis?.() || 0) > oneDayAgo
     );
