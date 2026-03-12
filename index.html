@@ -11,8 +11,8 @@
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, orderBy, getDocs, updateDoc, serverTimestamp, limit, Timestamp }
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    window.__fm = { initializeApp, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut,
-      getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, orderBy, getDocs, updateDoc, serverTimestamp, limit, Timestamp };
+    window.__fm = { initializeApp, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence,
+        getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, orderBy, getDocs, updateDoc, serverTimestamp, limit, Timestamp };
     window.dispatchEvent(new Event('firebaseReady'));
   </script>
 </head>
