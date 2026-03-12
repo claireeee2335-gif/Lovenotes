@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Love Note Jar</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, orderBy, getDocs, updateDoc, serverTimestamp, limit, Timestamp }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    window.__fm = { initializeApp, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut,
+      getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, orderBy, getDocs, updateDoc, serverTimestamp, limit, Timestamp };
+    window.dispatchEvent(new Event('firebaseReady'));
+  </script>
+</head>
+<body>
+
+<!-- ░░ LOADING ░░ -->
+<div id="loading-screen">
+  <div class="loading-jar">
+    <img src="assets/jar.png" alt="jar"/>
+    <p>Opening the jar…</p>
+  </div>
+</div>
+
+<!-- ░░ AUTH ░░ -->
+<div id="auth-screen" class="screen hidden">
+  <div class="auth-card">
+    <h1 class="auth-title">The Love Note Jar</h1>
+    <p class="auth-subtitle">Tiny letters. Big feelings.</p>
+    <div class="auth-tabs">
+      <button class="tab-btn active" data-tab="login">Sign In</button>
+      <button class="tab-btn"        data-tab="signup">Sign Up</button>
+    </div>
+    <div id="login-form" class="auth-form">
+      <input type="email"    id="login-email"    placeholder="Email address"/>
+      <input type="password" id="login-password" placeholder="Password"/>
+      <button id="login-btn"  class="btn-primary">Open My Jar</button>
+      <p id="login-error" class="form-error hidden"></p>
+    </div>
+    <div id="signup-form" class="auth-form hidden">
+      <input type="email"    id="signup-email"    placeholder="Email address"/>
+      <input type="password" id="signup-password" placeholder="Password (min 6 chars)"/>
+      <button id="signup-btn" class="btn-primary">Create My Jar</button>
+      <p id="signup-error" class="form-error hidden"></p>
+    </div>
+    <div class="auth-divider"><span>or</span></div>
+    <button id="guest-btn" class="btn-guest">Continue as Guest · 2 free notes</button>
+  </div>
+</div>
+
+<!-- ░░ USERNAME PICKER ░░ -->
+<div id="username-screen" class="screen hidden">
+  <div class="auth-card">
+    <h2 class="auth-title">Name Your Jar</h2>
+    <p class="auth-subtitle">Others find you at<br/><strong>mysite.com/u/<span id="username-preview">yourname</span></strong></p>
+    <div class="auth-form">
+      <input type="text" id="username-input" placeholder="yourname" maxlength="20"/>
+      <p class="hint-text">Letters, numbers, underscores · min 2 chars</p>
+      <button id="username-btn" class="btn-primary">Seal My Jar 🫙</button>
+      <p id="username-error" class="form-error hidden"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ░░ MAIN APP ░░ -->
+<div id="app-screen" class="screen hidden">
+
+  <header class="top-bar">
+    <div class="top-bar-left">
+      Hello, <strong id="current-username"></strong>
+    </div>
+    <div class="top-bar-right">
+      <button id="share-btn"   class="icon-btn" title="Share your jar">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button id="journal-btn" class="icon-btn" title="My journal">
+        <img src="assets/icon.png" alt="journal" class="journal-icon"/>
+      </button>
+      <button id="logout-btn"  class="icon-btn" title="Sign out">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="visitor-banner" class="hidden">
+    <p>Drop a note into <strong id="jar-owner-name"></strong>'s jar 🫙</p>
+  </div>
+
+  <!-- JAR STAGE -->
+  <main class="jar-stage">
+    <div id="jar-wrapper">
+      <!-- lid absolutely on top of jar neck, z-index above jar -->
+      <img id="jar-lid"  src="assets/lid.png"  alt="lid"/>
+      <img id="jar-body" src="assets/open-jar.png"  alt="jar"/>
+    </div>
+
+    <div id="note-count-badge" class="hidden">
+      <span id="note-count">0</span>
+      <span class="badge-label">unopened</span>
+    </div>
+
+    <div class="action-row">
+      <p class="jar-greeting" id="jar-greeting"></p>
+      <button id="open-note-btn" class="btn-open hidden">🕯 Open a Note</button>
+      <button id="drop-note-btn" class="btn-drop hidden">✉ Send a Note</button>
+    </div>
+
+    <p id="open-limit-msg"  class="limit-msg hidden">You've opened 2 notes today · come back tomorrow ✨</p>
+    <p id="guest-limit-msg" class="limit-msg hidden">
+      2 free notes used ·
+      <button class="link-btn" id="signup-prompt-btn">Sign up for unlimited!</button>
+    </p>
+  </main>
+
+  <!-- flying note animation layer -->
+  <div id="flying-note" class="hidden">
+    <div class="fni"><img src="assets/note.png" alt="note"/></div>
+  </div>
+</div>
+
+<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+     WRITE NOTE SCREEN — note.png IS the canvas
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<div id="write-screen" class="fullscreen-overlay hidden">
+
+  <button id="close-write" class="close-write-btn">✕</button>
+
+  <!-- The note paper — textarea lives INSIDE it -->
+  <div class="note-canvas-wrap">
+    <img src="assets/note.png" alt="note paper" class="note-canvas-img"/>
+    <textarea id="note-content" class="note-textarea" maxlength="2000"
+      placeholder="Write your note here…"></textarea>
+    <span class="note-char-count"><span id="char-count">0</span>/2000</span>
+  </div>
+
+  <!-- Send options below the note -->
+  <div class="send-options">
+
+    <div class="send-option-block">
+      <p class="send-option-label">① Send to a specific person</p>
+      <div class="to-row">
+        <input type="text" id="to-username" placeholder="their username…"/>
+        <button id="find-user-btn" class="btn-find">Find</button>
+      </div>
+      <p id="to-error"   class="form-error hidden"></p>
+      <p id="to-success" class="to-success  hidden">✓ Found <strong id="to-success-name"></strong>'s jar!</p>
+      <button id="send-to-user-btn" class="btn-primary send-action-btn hidden">
+        Fold &amp; Drop into their jar ✉
+      </button>
+    </div>
+
+    <div class="send-divider"><span>or</span></div>
+
+    <div class="send-option-block">
+      <p class="send-option-label">② Generate a shareable link</p>
+      <button id="gen-link-btn" class="btn-secondary">Get a Drop Link 🔗</button>
+      <div id="gen-link-result" class="gen-link-result hidden">
+        <input type="text" id="gen-link-input" readonly/>
+        <button id="copy-gen-link" class="btn-find">Copy</button>
+        <p class="gen-link-note">Anyone who opens this link will receive your note in their jar.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p id="send-error" class="form-error hidden" style="text-align:center;margin-top:8px;"></p>
+</div>
+
+<!-- ░░ OPEN NOTE MODAL ░░ -->
+<div id="open-modal" class="modal-overlay hidden">
+  <div class="modal-card note-reveal-card">
+    <button class="modal-close" id="close-open-modal">✕</button>
+    <p class="note-from-label">a note from <span id="note-sender"></span></p>
+    <div class="read-note-wrap">
+      <img src="assets/note.png" alt="note" class="read-note-img"/>
+      <p id="opened-note-content" class="read-note-text"></p>
+    </div>
+    <p class="note-timestamp" id="note-ts"></p>
+  </div>
+</div>
+
+<!-- ░░ JOURNAL MODAL ░░ -->
+<div id="journal-modal" class="modal-overlay hidden">
+  <div class="modal-card journal-modal">
+    <button class="modal-close" id="close-journal-modal">✕</button>
+    <h3 class="modal-title">📖 My Journal</h3>
+    <div id="journal-list"><p class="empty-state">No opened notes yet…</p></div>
+  </div>
+</div>
+
+<!-- ░░ SHARE MODAL ░░ -->
+<div id="share-modal" class="modal-overlay hidden">
+  <div class="modal-card" style="max-width:420px;text-align:center;">
+    <button class="modal-close" id="close-share-modal">✕</button>
+    <h3 class="modal-title">Share Your Jar 🫙</h3>
+    <p style="font-family:'Handwriting',serif;font-size:1rem;color:var(--ink-light);margin-bottom:18px;line-height:1.5;">
+      Anyone with this link can drop you a note!</p>
+    <div class="share-link-row">
+      <input type="text" id="share-link-input" readonly/>
+      <button id="copy-link-btn" class="btn-find">Copy</button>
+    </div>
+    <p id="copy-confirm" class="to-success hidden" style="margin-top:10px;">✓ Copied!</p>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
