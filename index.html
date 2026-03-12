@@ -28,32 +28,28 @@
 
 <!-- ░░ AUTH ░░ -->
 <div id="auth-screen" class="screen hidden">
-<div class="auth-card">
-  <h1 class="auth-title">The Love Note Jar</h1>
-  <p class="auth-subtitle">Tiny notes. Big feelings.</p>
-
-  <div id="login-form" class="auth-form">
-    <input type="email"    id="login-email"    placeholder="Email address"/>
-    <input type="password" id="login-password" placeholder="Password"/>
-    <button id="login-btn" class="btn-primary">Sign In 🫙</button>
-    <p id="login-error" class="form-error hidden"></p>
-    <p class="auth-switch">Don't have an account?
-      <button class="link-btn" id="show-signup">Sign up</button>
-    </p>
+  <div class="auth-card">
+    <h1 class="auth-title">The Love Note Jar</h1>
+    <p class="auth-subtitle">Tiny letters. Big feelings.</p>
+    <div class="auth-tabs">
+      <button class="tab-btn active" data-tab="login">Sign In</button>
+      <button class="tab-btn"        data-tab="signup">Sign Up</button>
+    </div>
+    <div id="login-form" class="auth-form">
+      <input type="email"    id="login-email"    placeholder="Email address"/>
+      <input type="password" id="login-password" placeholder="Password"/>
+      <button id="login-btn"  class="btn-primary">Open My Jar</button>
+      <p id="login-error" class="form-error hidden"></p>
+    </div>
+    <div id="signup-form" class="auth-form hidden">
+      <input type="email"    id="signup-email"    placeholder="Email address"/>
+      <input type="password" id="signup-password" placeholder="Password (min 6 chars)"/>
+      <button id="signup-btn" class="btn-primary">Create My Jar</button>
+      <p id="signup-error" class="form-error hidden"></p>
+    </div>
+    <div class="auth-divider"><span>or</span></div>
+    <button id="guest-btn" class="btn-guest">Continue as Guest · 2 free notes</button>
   </div>
-
-  <div id="signup-form" class="auth-form hidden">
-    <input type="email"    id="signup-email"    placeholder="Email address"/>
-    <input type="password" id="signup-password" placeholder="Password (min 6 chars)"/>
-    <button id="signup-btn" class="btn-primary">Create My Jar 🌸</button>
-    <p id="signup-error" class="form-error hidden"></p>
-    <p class="auth-switch">Already have an account?
-      <button class="link-btn" id="show-login">Sign in</button>
-    </p>
-  </div>
-
-  <div class="auth-divider"><span>or</span></div>
-  <button id="guest-btn" class="btn-guest">Continue as Guest · 2 free notes</button>
 </div>
 
 <!-- ░░ USERNAME PICKER ░░ -->
