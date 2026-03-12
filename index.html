@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence }
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, orderBy, getDocs, updateDoc, serverTimestamp, limit, Timestamp }
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
