@@ -18,7 +18,7 @@ const FIREBASE_CONFIG = {
 };
 /* ──────────────────────────────────────────────────────────── */
 
-const DAILY_OPEN_LIMIT = 2;
+const DAILY_OPEN_LIMIT = 4;
 const GUEST_SEND_LIMIT = 2;
 
 /* ─── JAR GEOMETRY (pixels, relative to #jar-wrapper 240×310px) ─
