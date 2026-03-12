@@ -52,7 +52,7 @@ window.addEventListener('firebaseReady', initApp);
 
 async function initApp() {
   const {
-    initializeApp, getAuth,
+    initializeApp, getAuth,setPersistence, browserLocalPersistence,
     createUserWithEmailAndPassword, signInWithEmailAndPassword,
     onAuthStateChanged, signOut,
     getFirestore, doc, getDoc, setDoc, addDoc, collection,
