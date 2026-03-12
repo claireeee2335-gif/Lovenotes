@@ -260,14 +260,45 @@ async function initApp() {
   /* ════════════════════════════════════════════════════════════
      AUTH TABS
   ════════════════════════════════════════════════════════════ */
-  document.getElementById('show-signup').addEventListener('click', () => {
-  document.getElementById('login-form').classList.add('hidden');
-  document.getElementById('signup-form').classList.remove('hidden');
-});
-document.getElementById('show-login').addEventListener('click', () => {
-  document.getElementById('signup-form').classList.add('hidden');
-  document.getElementById('login-form').classList.remove('hidden');
-});
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const t = btn.dataset.tab;
+      loginForm.classList.toggle ('hidden', t !== 'login');
+      signupForm.classList.toggle('hidden', t !== 'signup');
+    });
+  });
+
+  /* ════════════════════════════════════════════════════════════
+     SIGN UP / IN
+  ════════════════════════════════════════════════════════════ */
+  signupBtn.addEventListener('click', async () => {
+    hideErr(signupError);
+    const email = signupEmail.value.trim(), pass = signupPassword.value;
+    if (!email || !pass) return showErr(signupError, 'Fill in all fields.');
+    try {
+      signupBtn.disabled = true; signupBtn.textContent = 'Creating…';
+      await createUserWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      showErr(signupError, friendlyErr(e.code));
+      signupBtn.disabled = false; signupBtn.textContent = 'Create My Jar';
+    }
+  });
+
+  loginBtn.addEventListener('click', async () => {
+    hideErr(loginError);
+    const email = loginEmail.value.trim(), pass = loginPassword.value;
+    if (!email || !pass) return showErr(loginError, 'Fill in all fields.');
+    try {
+      loginBtn.disabled = true; loginBtn.textContent = 'Opening…';
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      showErr(loginError, friendlyErr(e.code));
+      loginBtn.disabled = false; loginBtn.textContent = 'Open My Jar';
+    }
+  });
+
   /* ════════════════════════════════════════════════════════════
      GUEST
   ════════════════════════════════════════════════════════════ */
@@ -847,4 +878,3 @@ document.getElementById('show-login').addEventListener('click', () => {
 
   setTimeout(() => loadingScreen.classList.add('hidden'), 3000);
 }
-
