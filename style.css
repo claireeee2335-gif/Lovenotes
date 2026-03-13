@@ -571,3 +571,82 @@ html, body {
   0%,100% { transform: translateY(0) rotate(0deg); }
   50%     { transform: translateY(-12px) rotate(3deg); }
 }
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE — max-width 480px
+═══════════════════════════════════════════════════════ */
+@media(max-width:480px) {
+
+  /* ── Auth card ── */
+  .auth-card  { padding:28px 18px 24px; }
+  .auth-title { font-size:2rem; }
+
+  /* ── Top bar ── */
+  .top-bar { padding:10px 14px; }
+
+  /* ── Jar stage ── */
+  .jar-stage {
+    padding-top:72px;
+    gap:16px;
+    justify-content:center;
+  }
+
+  /* Floating decorations too wide on mobile */
+  .jar-stage::before {
+    display:none;
+  }
+
+  /* ── Jar wrapper — shrink but keep proportions ── */
+  #jar-wrapper {
+    width:200px;
+    height:260px;
+  }
+
+  /* ── Jar body scales with wrapper ── */
+  #jar-body {
+    width:200px;
+  }
+
+  /* ── Lid — scale down to match jar neck ── */
+  #jar-lid {
+    width:192px;   /* same ratio as desktop: 230/240 * 200 */
+    top:0;
+    left:49%;
+  }
+
+  /* Cork pop on mobile */
+  .lid-open #jar-lid {
+    top:-50px !important;
+    transform:translateX(-50%) rotate(-22deg) !important;
+  }
+
+  /* ── Buttons ── */
+  .action-row {
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .btn-drop, .btn-open {
+    width:210px;
+    text-align:center;
+  }
+
+  /* ── Write screen ── */
+  .note-canvas-wrap { width:96vw; margin-top:52px; }
+  .send-options     { width:96vw; }
+  .close-write-btn  { top:12px; right:12px; }
+
+  /* ── Modals ── */
+  .modal-card { padding:26px 16px 22px; }
+
+  /* ── Toast ── */
+  .toast {
+    width:85vw;
+    text-align:center;
+    white-space:normal;
+    font-size:.9rem;
+  }
+
+  /* ── Journal modal full height ── */
+  .journal-modal { max-height:88vh; }
+}
